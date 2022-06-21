@@ -1,31 +1,35 @@
 import telegram
 import psycopg2
-from . import inc
+import inc
 
 #bot을 선언
-bot = telegram.Bot(token = inc.token)
+bot = telegram.Bot(token = inc.set['Telegram']['token'])
 
 # 마지막 업데이트목록
-lastupdatesql = 'SELECT update_id FROM Lastupdate'
-inc.cursor.execute(lastupdatesql)
-offset = inc.cursor.fetchone()
+# lastupdatesql = 'SELECT update_id FROM Lastupdate'
+# inc.cursor.execute(lastupdatesql)
+# offset = inc.cursor.fetchone()
 
 #업데이트
-updates = bot.getUpdates(offset = offset[0])
-
+updates = bot.getUpdates()
 # 데이터 입력
 for u in updates :
-    
+    print(u)
     # 남아있는 데이터 넘기기
-    if u['update_id'] == offset[0] :
-        continue
+    # if u['update_id'] == offset[0] :
+    #     continue
 
     # 회원 입력
     if u.message.text == '/start' :
-        sql = 'INSERT INTO User (chat_id, id, name, date) VALUES(%s, %s, %s)'
-        inc.cursor.execute(sql, (u.message.chat.id, u.message.chat.username, u.message.chat.last_name + u.message.chat.first_name))
-        bot.sendMessage(chat_id = u.message.chat.id, text = '/help를 눌러 도움말을 확인하세요.')
-        inc.conn.commit()
+        try:
+            sql = 'INSERT INTO User (chat_id, id, name, date) VALUES(%s, %s, %s)'
+            inc.cursor.execute(sql, (u.message.chat.id, u.message.chat.username, u.message.chat.last_name + u.message.chat.first_name))
+            bot.sendMessage(chat_id = u.message.chat.id, text = '/help를 눌러 도움말을 확인하세요.')
+            inc.conn.commit()
+        except:
+            bot.sendMessage(chat_id = u.message.chat.id, text = '이미 등록된 정보입니다.')
+        continue
+            
 
     # 종목 입력
     elif u.message.text.startswith('@') :
@@ -46,15 +50,14 @@ for u in updates :
             inc.conn.commit()
 
     # 도움말
-    # elif u.message.text == '/help' :
-    #     bot.sendMessage(chat_id = u.message.chat.id, text='@keyword를 입력해 주세요. ex)@리버풀\n'
-    #                     '|입력시 다른기사도 확인 할 수 있습니다. ex)@리버풀|맨유\n'
-    #                     '/link입력시 기사의 원문 링크도 확인 할 수 있습니다.')
+    elif u.message.text == '/help' :
+        bot.sendMessage(chat_id = u.message.chat.id, text='@종목을 입력해주세요\n'
+                        '기간은 일주일 입니다. (추후 업데이트 예정!)')
 
 # 메세지 저장
-if updates :
-    updatesql = 'UPDATE Lastupdate SET update_id = %s'
-    inc.cursor.execute(updatesql, updates[-1]['update_id'])
-    inc.conn.commit()
+# if updates :
+#     updatesql = 'UPDATE Lastupdate SET update_id = %s'
+#     inc.cursor.execute(updatesql, updates[-1]['update_id'])
+#     inc.conn.commit()
     
 inc.conn.close()
