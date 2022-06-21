@@ -46,7 +46,7 @@ for u in updates :
         # 없으면 추가
         except:
             inc.conn.rollback()
-            sql = 'INSERT INTO bookmark (code, chat_id, date) VALUES (%s, %s)'
+            sql = 'INSERT INTO bookmark (code, chat_id) VALUES (%s, %s)'
             inc.cursor.execute(sql, (code, u.message.chat.id))
             bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + code + '"가 추가되었습니다.')
             inc.conn.commit()

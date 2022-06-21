@@ -3,9 +3,11 @@ import psycopg2
 import json
 
 # setting값 연동
-set_path = 'setting.json'
+set_path = './setting.json'
 with open(set_path, 'r', encoding = 'utf8') as f:
     set = json.load(f)
+
+
 
 # 디비 연결
 conn = psycopg2.connect(
