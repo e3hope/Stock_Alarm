@@ -38,7 +38,7 @@ for u in updates :
 
         # 있으면 삭제
         try:
-            sql = 'DELETE bookmark WHERE code = %s AND chat_id = %s'
+            sql = 'DELETE FROM bookmark WHERE code = %s AND chat_id = %s'
             inc.cursor.execute(sql, (code, u.message.chat.id))
             bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + code + '"가 삭제되었습니다.')
             inc.conn.commit()

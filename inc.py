@@ -7,8 +7,6 @@ set_path = './setting.json'
 with open(set_path, 'r', encoding = 'utf8') as f:
     set = json.load(f)
 
-
-
 # 디비 연결
 conn = psycopg2.connect(
     host = set['DB']['host'], 
