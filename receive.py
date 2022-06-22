@@ -1,6 +1,7 @@
 import telegram
 import psycopg2
 import inc
+import stock
 
 #bot을 선언
 bot = telegram.Bot(token = inc.set['Telegram']['token'])
@@ -11,15 +12,14 @@ inc.cursor.execute(lastupdatesql)
 offset = inc.cursor.fetchone()
 
 #업데이트
-updates = bot.getUpdates(offset=offset[0])
+updates = bot.getUpdates(offset = offset[0])
 
 # 데이터 입력
 for u in updates :
 
     # 남아있는 데이터 넘기기
     if u['update_id'] == offset[0] :
-        break
-    print(offset[0], u['update_id'])
+        continue
     
     # 회원 입력
     if u.message.text == '/start' :
@@ -35,21 +35,28 @@ for u in updates :
     
     # 종목 입력
     elif u.message.text.startswith('@') :
-        code = u.message.text.replace('@', '')
-
+        
+        # 종목코드 추출
+        keyword = u.message.text.replace('@', '')
+        
+        # 종목코드가 없는 경우
+        if stock.stock_code(keyword) is None:
+            bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
+            continue
+        
         # 있으면 삭제
         try:
             sql = 'DELETE FROM bookmark WHERE code = %s AND chat_id = %s'
-            inc.cursor.execute(sql, (code, str(u.message.chat.id)))
-            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + code + '"가 삭제되었습니다.')
+            inc.cursor.execute(sql, (keyword, str(u.message.chat.id)))
+            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 삭제되었습니다.')
             inc.conn.commit()
 
         # 없으면 추가
         except:
             inc.conn.rollback()
             sql = 'INSERT INTO bookmark (code, chat_id) VALUES (%s, %s)'
-            inc.cursor.execute(sql, (code, u.message.chat.id))
-            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + code + '"가 추가되었습니다.')
+            inc.cursor.execute(sql, (keyword, u.message.chat.id))
+            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 추가되었습니다.')
             inc.conn.commit()
 
     # 도움말
