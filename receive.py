@@ -43,17 +43,17 @@ for u in updates :
         if stock.stock_code(keyword) is None:
             bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
             continue
-        
+
         # 관심종목 여부 확인
         try:
             bookmarksql = 'SELECT name FROM bookmark WHERE name = %s AND chat_id = %s'
-            inc.cursor.execute(bookmarksql, (keyword, u.message.chat.id))
+            inc.cursor.execute(bookmarksql, (keyword, str(u.message.chat.id)))
             result = inc.cursor.fetchone()
 
             # 없으면 추가
-            if result[0] is None:
+            if result is None:
                 sql = 'INSERT INTO bookmark (name, chat_id) VALUES (%s, %s)'
-                inc.cursor.execute(sql, (keyword, u.message.chat.id))
+                inc.cursor.execute(sql, (keyword, str(u.message.chat.id)))
                 inc.conn.commit()
                 bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 추가되었습니다.')
 

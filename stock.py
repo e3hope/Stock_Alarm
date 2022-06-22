@@ -33,9 +33,9 @@ def stock_data(keyword, date = None):
 
     text = ''
     for x,y in data.items():
-        temp = x + '날의 종가: ' + y['Close'] + ' , 변화율:' + y['Change'] + '\n'
+        temp = str(x) + '날의 종가: ' + str(y['Close']) + ' , 변화율:' + str(y['Change']) + '\n'
         text = text + temp
-    return text + '합계: ' + sum
+    return text + '합계: ' + str(sum)
 
 # 종목 코드
 def stock_code(keyword):
