@@ -29,8 +29,13 @@ def stock_data(keyword, date = None):
     df['Change'] = round(df['Change'] * 100, 2).apply(str) + '%'
 
     data = df.transpose().to_dict()
-    data['Sum'] = sum
-    return data
+    # data['Sum'] = sum
+
+    text = ''
+    for x,y in data.items():
+        temp = x + '날의 종가: ' + y['Close'] + ' , 변화율:' + y['Change'] + '\n'
+        text = text + temp
+    return text + '합계: ' + sum
 
 # 종목 코드
 def stock_code(keyword):
