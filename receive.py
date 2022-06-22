@@ -6,20 +6,21 @@ import inc
 bot = telegram.Bot(token = inc.set['Telegram']['token'])
 
 # 마지막 업데이트목록
-lastupdatesql = 'SELECT update_id, message_id FROM lastupdate'
+lastupdatesql = 'SELECT update_id FROM lastupdate'
 inc.cursor.execute(lastupdatesql)
-offset = inc.cursor.fetchall()
+offset = inc.cursor.fetchone()
 
 #업데이트
-updates = bot.getUpdates()
+updates = bot.getUpdates(offset=offset[0])
 
 # 데이터 입력
 for u in updates :
 
     # 남아있는 데이터 넘기기
-    if not offset or u['update_id'] == offset[0] and u['message_id'] == offset[0] :
-        continue
-
+    if u['update_id'] == offset[0] :
+        break
+    print(offset[0], u['update_id'])
+    
     # 회원 입력
     if u.message.text == '/start' :
     
@@ -39,7 +40,7 @@ for u in updates :
         # 있으면 삭제
         try:
             sql = 'DELETE FROM bookmark WHERE code = %s AND chat_id = %s'
-            inc.cursor.execute(sql, (code, u.message.chat.id))
+            inc.cursor.execute(sql, (code, str(u.message.chat.id)))
             bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + code + '"가 삭제되었습니다.')
             inc.conn.commit()
 
@@ -58,8 +59,8 @@ for u in updates :
 
 # 메세지 저장
 if updates :
-    updatesql = 'UPDATE lastupdate SET update_id = %s, message_id = %s'
-    inc.cursor.execute(updatesql, (updates[-1]['update_id'], updates[-1]['message_id']))
+    updatesql = 'UPDATE lastupdate SET update_id = %s'
+    inc.cursor.execute(updatesql, [updates[-1]['update_id']])
     inc.conn.commit()
     
 inc.conn.close()
