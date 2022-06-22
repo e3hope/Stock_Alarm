@@ -1,11 +1,18 @@
 import telegram
 import psycopg2
-import re
 import inc
+import stock
 
 #bot을 선언
 bot = telegram.Bot(token = inc.set['Telegram']['token'])
 
-# # 디비 연결
-# conn = psycopg2.connect(host='localhost', user='e3hope', password='ds64079376*', db='SN', charset='utf8')
-# cursor = conn.cursor()
+# 데이터 확인
+sql = 'SELECT chat_id, name FROM bookmark'
+inc.cursor.execute(sql)
+result = inc.cursor.fetchall()
+
+# 유저별 키워드 기사 보내기
+for u in result :
+    bot.sendMessage(chat_id = u[0], text = stock.stock_data(u[1]))
+
+inc.cursor.close

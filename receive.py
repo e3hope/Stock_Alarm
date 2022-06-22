@@ -46,15 +46,15 @@ for u in updates :
         
         # 있으면 삭제
         try:
-            sql = 'DELETE FROM bookmark WHERE code = %s AND chat_id = %s'
+            sql = 'DELETE FROM bookmark WHERE name = %s AND chat_id = %s'
             inc.cursor.execute(sql, (keyword, str(u.message.chat.id)))
-            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 삭제되었습니다.')
             inc.conn.commit()
-
+            bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 삭제되었습니다.')
+            
         # 없으면 추가
         except:
             inc.conn.rollback()
-            sql = 'INSERT INTO bookmark (code, chat_id) VALUES (%s, %s)'
+            sql = 'INSERT INTO bookmark (name, chat_id) VALUES (%s, %s)'
             inc.cursor.execute(sql, (keyword, u.message.chat.id))
             bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목에"' + keyword + '"가 추가되었습니다.')
             inc.conn.commit()
