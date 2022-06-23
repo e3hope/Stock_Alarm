@@ -12,7 +12,6 @@ def stock_info(keyword,period):
     if code is None:
         return '상장하지 않은 회사입니다.'
     
-    
     date = datetime.datetime.now() - datetime.timedelta(days = period + 2)
 
     # 해당종목 일주일치 데이터 및 합계 출력
@@ -32,43 +31,32 @@ def stock_info(keyword,period):
 
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
-        temp = str(x) + '날의 종가: ' + str(y['Close']) + ' , 변화율:' + str(y['Change']) + '\n'
+        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 , 변화율:' + str(y['Change']) + '\n'
         text = text + temp
     return text + str(period) + '일간의 합계: ' + str(sum)
 
-def stock_close(keyword):
+def stock_close():
 
-    # 코드 구하기
-    code = stock_code(keyword)
+    # code 구하기
+    sql = 'SELECT b.chat_id, b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name)'
+    inc.cursor.execute(sql)
+    result = inc.cursor.fetchall()
+    chat_id,name,code = zip(*result)
+
+    # 종목 종가 추출
+    Close = []
+    for i in range(len(code)):
+        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        Close.append(list(temp.transpose().to_dict().values())[0])
+
+    data = {}   
+    for i in range(len(chat_id)):
+        if chat_id[i] in data:
+            data[chat_id[i]].append({name[i]:Close[i]})
+        else: 
+            data[chat_id[i]] = [{name[i]:Close[i]}]
     
-    # 예외처리
-    if code is None:
-        return '상장하지 않은 회사입니다.'
-    
-    # 날짜 구하기 ( 일주일 전 )
-    if date is None:
-        date = datetime.datetime.now() - datetime.timedelta(days = 7)
-
-    # 해당종목 일주일치 데이터 및 합계 출력
-    df = fdr.DataReader(code, date)[['Close','Change']]
-
-    # 날짜변수 문자열 타입 변환
-    df.index = df.index.strftime('%Y-%m-%d')
-
-    # 총 합계 변수
-    sum = str(round(df['Change'].sum() * 100, 2)) + '%'
-
-    # 퍼센트 변환
-    df['Change'] = round(df['Change'] * 100, 2).apply(str) + '%'
-
-    data = df.transpose().to_dict()
-    # data['Sum'] = sum
-
-    text = str(keyword) + '의 7일간 변동률\n'
-    for x,y in data.items():
-        temp = str(x) + '날의 종가: ' + str(y['Close']) + ' , 변화율:' + str(y['Change']) + '\n'
-        text = text + temp
-    return text + '7일간의 합계: ' + str(sum)
+    return data
 
 # 종목 코드
 def stock_code(keyword):

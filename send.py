@@ -6,13 +6,16 @@ import stock
 #bot을 선언
 bot = telegram.Bot(token = inc.set['Telegram']['token'])
 
-# 데이터 확인
-sql = 'SELECT chat_id, name FROM bookmark'
-inc.cursor.execute(sql)
-result = inc.cursor.fetchall()
+# 종가 불러오기
+data = stock.stock_close()
 
-# 유저별 키워드 기사 보내기
-for u in result :
-    bot.sendMessage(chat_id = u[0], text = stock.stock_data(u[1]))
+# 유저별 관심종목 보내기
+for x,y in data.items():
+    text = ''
+    for z in y:
+        for k,v in z.items():
+            temp = k + '의 종가: ' + str(format(v, ',')) + '원\n'
+        text = temp + text
+    bot.sendMessage(chat_id = x, text = text)
 
 inc.cursor.close

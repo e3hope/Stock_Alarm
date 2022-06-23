@@ -1,4 +1,3 @@
-import telegram
 import psycopg2
 import json
 
@@ -16,6 +15,3 @@ conn = psycopg2.connect(
     dbname = set['DB']['db']
 )
 cursor = conn.cursor()
-
-# # 텔레그램 설정
-# token = set['Telegram']['token']
