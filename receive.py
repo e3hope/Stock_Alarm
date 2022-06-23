@@ -28,7 +28,7 @@ for u in updates :
         
             try:
                 sql = 'INSERT INTO member (chat_id, id, name) VALUES (%s, %s, %s)'
-                inc.cursor.execute(sql, (u.message.chat.id, u.message.chat.username, u.message.chat.last_name + u.message.chat.first_name))
+                inc.cursor.execute(sql, (u.message.chat.id, None if u.message.chat.username is None else u.message.chat.username, u.message.chat.last_name + u.message.chat.first_name))    
                 inc.conn.commit()
                 bot.sendMessage(chat_id = u.message.chat.id, text = '/help를 눌러 도움말을 확인하세요.')
             except:
