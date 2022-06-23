@@ -3,7 +3,7 @@ import datetime
 import inc
 
 # 종목 데이터
-def stock_data(keyword, date = None):
+def stock_info(keyword,period):
 
     # 코드 구하기
     code = stock_code(keyword)
@@ -12,9 +12,8 @@ def stock_data(keyword, date = None):
     if code is None:
         return '상장하지 않은 회사입니다.'
     
-    # 날짜 구하기 ( 일주일 전 )
-    if date is None:
-        date = datetime.datetime.now() - datetime.timedelta(days = 10)
+    
+    date = datetime.datetime.now() - datetime.timedelta(days = period + 2)
 
     # 해당종목 일주일치 데이터 및 합계 출력
     df = fdr.DataReader(code, date)[['Close','Change']]
@@ -31,11 +30,45 @@ def stock_data(keyword, date = None):
     data = df.transpose().to_dict()
     # data['Sum'] = sum
 
-    text = ''
+    text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
         temp = str(x) + '날의 종가: ' + str(y['Close']) + ' , 변화율:' + str(y['Change']) + '\n'
         text = text + temp
-    return text + '합계: ' + str(sum)
+    return text + str(period) + '일간의 합계: ' + str(sum)
+
+def stock_close(keyword):
+
+    # 코드 구하기
+    code = stock_code(keyword)
+    
+    # 예외처리
+    if code is None:
+        return '상장하지 않은 회사입니다.'
+    
+    # 날짜 구하기 ( 일주일 전 )
+    if date is None:
+        date = datetime.datetime.now() - datetime.timedelta(days = 7)
+
+    # 해당종목 일주일치 데이터 및 합계 출력
+    df = fdr.DataReader(code, date)[['Close','Change']]
+
+    # 날짜변수 문자열 타입 변환
+    df.index = df.index.strftime('%Y-%m-%d')
+
+    # 총 합계 변수
+    sum = str(round(df['Change'].sum() * 100, 2)) + '%'
+
+    # 퍼센트 변환
+    df['Change'] = round(df['Change'] * 100, 2).apply(str) + '%'
+
+    data = df.transpose().to_dict()
+    # data['Sum'] = sum
+
+    text = str(keyword) + '의 7일간 변동률\n'
+    for x,y in data.items():
+        temp = str(x) + '날의 종가: ' + str(y['Close']) + ' , 변화율:' + str(y['Change']) + '\n'
+        text = text + temp
+    return text + '7일간의 합계: ' + str(sum)
 
 # 종목 코드
 def stock_code(keyword):
