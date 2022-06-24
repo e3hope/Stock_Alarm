@@ -3,7 +3,7 @@ import stock
 import command
 
 # 최종업데이트목록
-offset = inc.offset()
+offset = inc.lastupdate()
 updates = inc.bot.getUpdates(offset = offset)
 
 # 데이터 입력
