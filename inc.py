@@ -1,3 +1,4 @@
+import telegram
 import psycopg2
 import json
 
@@ -15,3 +16,16 @@ conn = psycopg2.connect(
     dbname = set['DB']['db']
 )
 cursor = conn.cursor()
+
+#bot을 선언
+bot = telegram.Bot(token = set['Telegram']['token'])
+
+# 마지막 업데이트목록
+def lastupdate():
+    sql = 'SELECT update_id FROM lastupdate'
+    cursor.execute(sql)
+    offset = cursor.fetchone()
+    return offset[0]
+
+def close():
+    conn.close()

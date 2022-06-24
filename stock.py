@@ -3,10 +3,10 @@ import datetime
 import inc
 
 # 종목 데이터
-def stock_info(keyword,period):
+def info(keyword,period):
 
     # 코드 구하기
-    code = stock_code(keyword)
+    code = code(keyword)
     
     # 예외처리
     if code is None:
@@ -35,7 +35,7 @@ def stock_info(keyword,period):
         text = text + temp
     return text + str(period) + '일간의 합계: ' + str(sum)
 
-def stock_close():
+def close():
 
     # code 구하기
     sql = 'SELECT b.chat_id, b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name)'
@@ -59,7 +59,7 @@ def stock_close():
     return data
 
 # 종목 코드
-def stock_code(keyword):
+def code(keyword):
     
     # 디비에서 종목코드 가져오기
     try:
