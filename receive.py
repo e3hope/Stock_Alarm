@@ -61,20 +61,20 @@ for u in updates :
             if stock.getcode(keyword) is None:
                 inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                 continue
-
+            
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = stock.info(keyword,period))
 
         # 도움말
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text='@{종목}을 입력하면 관심종목으로 지정됩니다. ex) @삼성전자\n'
                             '다시 한번입력 시 관심종목에서 삭제됩니다.\n'
-                            '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보내드립니다~!'
-                            '!{종목} {기간} 을입력시 기간별 변화율을 보여줍니다. ex) !삼성전자 7')
+                            '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보내드립니다~!\n'
+                            '!{종목} {기간} 을 입력 시 기간별 변화율을 보여줍니다. ex) !삼성전자 7')
     except:
         continue
 
 # 메세지 저장
 if updates :
-    command.lastupdate(updates[-1]['update_id'])
+    command.close(updates[-1]['update_id'])
     
 inc.close()

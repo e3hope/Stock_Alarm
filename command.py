@@ -40,7 +40,7 @@ def bookmark(keyword, id):
     
     return result
 
-def lastupdate(lastupdate):
+def close(lastupdate):
     updatesql = 'UPDATE lastupdate SET update_id = %s'
     inc.cursor.execute(updatesql, [lastupdate])
     inc.conn.commit()

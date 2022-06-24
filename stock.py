@@ -31,11 +31,11 @@ def info(keyword,period):
 
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
-        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 , 변화율:' + str(y['Change']) + '\n'
+        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 , 변화율: ' + str(y['Change']) + '\n'
         text = text + temp
     return text + str(period) + '일간의 합계: ' + str(sum)
 
-def close():
+def getclose():
 
     # code 구하기
     sql = 'SELECT b.chat_id, b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name)'
@@ -46,8 +46,9 @@ def close():
     # 종목 종가 추출
     Close = []
     for i in range(len(code)):
-        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-        Close.append(list(temp.transpose().to_dict().values())[0])
+        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))[['Close','Change']]
+        temp['Change'] = round(temp['Change'] * 100, 2).apply(str)
+        Close.append(list(temp.transpose().to_dict().values()))
 
     data = {}   
     for i in range(len(chat_id)):
