@@ -6,7 +6,7 @@ import inc
 def info(keyword,period):
 
     # 코드 구하기
-    code = code(keyword)
+    code = getcode(keyword)
     
     # 예외처리
     if code is None:
@@ -59,7 +59,7 @@ def close():
     return data
 
 # 종목 코드
-def code(keyword):
+def getcode(keyword):
     
     # 디비에서 종목코드 가져오기
     try:

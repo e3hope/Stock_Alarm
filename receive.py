@@ -30,7 +30,7 @@ for u in updates :
             keyword = u.message.text.replace('@', '')
 
             # 종목코드가 없는 경우
-            if stock.code(keyword) is None:
+            if stock.getcode(keyword) is None:
                 inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                 continue
 
@@ -58,7 +58,7 @@ for u in updates :
             period = int(temp[1]) if len(temp) == 2 else 7
 
             # 종목코드가 없는 경우
-            if stock.code(keyword) is None:
+            if stock.getcode(keyword) is None:
                 inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                 continue
 

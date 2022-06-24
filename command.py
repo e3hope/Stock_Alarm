@@ -30,7 +30,7 @@ def bookmark(keyword, id):
         # 있으면 삭제
         else:
             sql = 'DELETE FROM bookmark WHERE name = %s AND chat_id = %s'
-            inc.cursor.execute(sql, (keyword, str(u.message.chat.id)))
+            inc.cursor.execute(sql, (keyword, str(id)))
             inc.conn.commit()
             result = 'delete'
 
