@@ -24,14 +24,14 @@ def info(keyword,period):
     sum = str(round(df['Change'].sum() * 100, 2)) + '%'
 
     # 퍼센트 변환
-    df['Change'] = round(df['Change'] * 100, 2).apply(str) + '%'
+    df['Change'] = round(df['Change'] * 100, 2).apply(str)
 
     data = df.transpose().to_dict()
     # data['Sum'] = sum
 
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
-        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 , 변화율: ' + str(y['Change']) + '\n'
+        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change'] + '%\n'
         text = text + temp
     return text + str(period) + '일간의 합계: ' + str(sum)
 
