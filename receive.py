@@ -64,19 +64,7 @@ for u in updates :
             
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = stock.info(keyword,period))
 
-        # 종목 지정가 지정
-        elif u.message.text.startswith('$') :
-
-            #  # 종목 및 기간 추출
-            temp = u.message.text.split()
-
-            # 입력방식이 잘못된경우 리턴
-            if len(temp) > 3:
-                inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
-                continue
-
-            keyword = temp[0].replace('!', '')
-
+            
         # 도움말
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text='@{종목}을 입력하면 관심종목으로 지정됩니다. ex) @삼성전자\n'
