@@ -129,7 +129,7 @@ for u in updates :
 
                 # 지정가 확인 답장
                 if command.limit(u.message.chat.id,keyword,table,price):
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가' + price + '원이 등록되었습니다.')
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가' + str(format(price,',')) + '원이 등록되었습니다.')
                 else:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '알 수 없는 이유로 등록되지 않았습니다.')
                 

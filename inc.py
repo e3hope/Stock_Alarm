@@ -4,7 +4,7 @@ import json
 import platform
 
 # setting값 연동
-if platform.platform == 'Linux-5.8.0-44-lowlatency-x86_64-with-glibc2.29':
+if platform.platform() == 'Linux-5.8.0-44-lowlatency-x86_64-with-glibc2.29':
     set_path = './setting.json'
 else:
     set_path = '/home/Stock_Alarm/Stock_Alarm/setting.json'
