@@ -61,7 +61,11 @@ for u in updates :
             elif temp[0] == '!기간조회':
                 
                 if len(temp) == 3:
-                    period = temp[2]
+                    try:
+                        period = int(temp[2])
+                    except:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 숫자로 입력해주시기 바랍니다.')
+                        continue
 
                 # 기본값 지정
                 elif len(temp) == 2:
