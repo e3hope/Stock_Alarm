@@ -59,17 +59,18 @@ for u in updates :
             
             # 종목 일자별 변화율
             elif temp[0] == '!기간조회':
-
-                # 입력방식이 잘못된경우 리턴
-                if len(temp) < 2 or len(temp) > 3 :
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
-                    continue
                 
-                elif len(temp) == 3:
+                if len(temp) == 3:
                     period = temp[2]
 
+                # 기본값 지정
                 elif len(temp) == 2:
-                    period = int(temp[1]) if len(temp) == 2 else 7
+                    period = 7
+
+                # 입력방식이 잘못된경우 리턴
+                else:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
+                    continue
 
                 # 종목코드가 없는 경우
                 if stock.getcode(keyword) is None:
