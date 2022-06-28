@@ -40,9 +40,22 @@ def bookmark(id, keyword):
     
     return result
 
-def limit(id,keyword,table,price):
+def low(id,keyword,price):
     try:
-        sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET name = %s, price = %s'
+        sql = 'INSERT INTO low (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET name = %s, price = %s'
+        inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
+        inc.conn.commit()
+        result = True
+
+    except:
+        inc.conn.rollback()
+        result = False
+    
+    return result
+
+def high(id,keyword,price):
+    try:
+        sql = 'INSERT INTO high (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET name = %s, price = %s'
         inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
         inc.conn.commit()
         result = True

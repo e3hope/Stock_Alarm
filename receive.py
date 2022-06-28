@@ -118,18 +118,18 @@ for u in updates :
                     continue
 
                 elif price > now:
-                    table = 'high'
+                    result = command.high(u.message.chat.id,keyword,price)
                 
                 elif price < now:
-                    table = 'low'
+                    result = command.low(u.message.chat.id,keyword,price)
 
                 else:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '문제가 생겼습니다. 관리자에게 문의주시기 바랍니다.')
                     continue
 
                 # 지정가 확인 답장
-                if command.limit(u.message.chat.id,keyword,table,price):
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가' + str(format(price,',')) + '원이 등록되었습니다.')
+                if result:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가: ' + str(format(price,',')) + '원이 등록되었습니다.')
                 else:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '알 수 없는 이유로 등록되지 않았습니다.')
                 
