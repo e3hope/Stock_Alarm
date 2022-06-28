@@ -98,7 +98,14 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                     continue
 
-                price = temp[2]
+                # 지정가 숫자가 아닌경우 예외처리
+                try:
+                    price = int(temp[2])
+                except:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '지정가는 숫자로 입력해주시기 바랍니다.')
+                    continue
+                
+                # 현재가 확인
                 now = stock.now(keyword)
 
                 # 지정가 판단후 디비 입력
