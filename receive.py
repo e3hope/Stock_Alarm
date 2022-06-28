@@ -25,10 +25,13 @@ for u in updates :
 
         # 도움말
         elif u.message.text == '/help' :
-            inc.bot.sendMessage(chat_id = u.message.chat.id, text='@{종목}을 입력하면 관심종목으로 지정됩니다. ex) @삼성전자\n'
-                            '다시 한번입력 시 관심종목에서 삭제됩니다.\n'
-                            '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보내드립니다~!\n'
-                            '!{종목} {기간} 을 입력 시 기간별 변화율을 보여줍니다. ex) !삼성전자 7')
+            inc.bot.sendMessage(chat_id = u.message.chat.id, text='!관심종목 {종목} 입력 시 관심종목으로 지정됩니다. ex) !삼성전자\n'
+                            '!관심종목 {종목} 재입력 시 관심종목에서 삭제됩니다.\n'
+                            '!종목 {기간} 입력 시 기간별 변화율을 보여줍니다. ex) !삼성전자 7\n'
+                            '!지정가 {종목} {가격} 입력 시 지정된 가격이 오면 알림을 보냅니다. ex) !지정가 삼성전자 50000\n'
+                            '!지정가 {종목} {가격} 재입력 시 지정된 가격을 수정해줍니다.\n'
+                            '!지정가삭제 {종목} 입력 시 지정가 알림을 삭제합니다.\n'
+                            '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.')
 
         if u.message.text.startswith('!'):
             
@@ -122,10 +125,13 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
                     continue
 
-                if command.limit_delete(u.message.chat.id):
+                if command.limit_delete(u.message.chat.id, keyword):
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '등록된 지정가가 삭제되었습니다.')
                 else:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '남아있는 지정가가 없습니다.')
+    
+            else :
+                inc.bot.sendMessage(chat_id = u.message.chat.id, text = '해당된 명령어가 없습니다. /help를 입력하여 다시 확인바랍니다.')
     except:
         continue
 
