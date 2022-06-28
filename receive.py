@@ -108,6 +108,10 @@ for u in updates :
                 # 현재가 확인
                 now = stock.now(keyword)
 
+                if now is None:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '주식api에 문제가 생겼습니다. 관리자에게 문의주시기 바랍니다.')
+                    continue
+
                 # 지정가 판단후 디비 입력
                 if price == now:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '현재가격과 동일해서 등록하지 않습니다.')
@@ -115,8 +119,13 @@ for u in updates :
 
                 elif price > now:
                     table = 'high'
+                
                 elif price < now:
                     table = 'low'
+
+                else:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '문제가 생겼습니다. 관리자에게 문의주시기 바랍니다.')
+                    continue
 
                 # 지정가 확인 답장
                 if command.limit(u.message.chat.id,keyword,table,price):

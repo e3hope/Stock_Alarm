@@ -65,8 +65,12 @@ def now(keyword):
     # 코드 구하기
     code = getcode(keyword)
 
-    temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-    data = list(temp.transpose().to_dict().values())[0]
+    try:
+        temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        data = list(temp.transpose().to_dict().values())[0]
+    except:
+        return None
+    
     return data
 
 # 종목 코드
