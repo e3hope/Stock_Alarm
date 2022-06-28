@@ -59,15 +59,15 @@ def getclose():
     
     return data
 
-# 종가 구하기
-# def limit(keyword,low,high):
+# 현재가격 구하기
+def now(keyword):
     
-#     # 코드 구하기
-#     code = getcode(keyword)
+    # 코드 구하기
+    code = getcode(keyword)
 
-#     temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-#     data = temp.transpose().to_dict()
-#     print(data)
+    temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+    data = list(temp.transpose().to_dict().values())[0]
+    return data
 
 # 종목 코드
 def getcode(keyword):

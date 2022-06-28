@@ -12,7 +12,7 @@ def start(id, username, name):
     
     return result
 
-def bookmark(keyword, id):
+def bookmark(id, keyword):
 
     # 관심종목 여부 확인
     try:
@@ -37,6 +37,32 @@ def bookmark(keyword, id):
     except:
             inc.conn.rollback()
             result = 'error'
+    
+    return result
+
+def limit(id,keyword,table,price):
+    try:
+        sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET (name, price) VALUES (%s, %s)'
+        inc.cursor.execute(sql, (keyword, str(id), price))
+        inc.conn.commit()
+        result = True
+
+    except:
+        inc.conn.rollback()
+        result = False
+    
+    return result
+
+def limit_delete(id,keyword,table):
+    try:
+        sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
+        inc.cursor.execute(sql, (keyword, str(id)))
+        inc.conn.commit()
+        result = True
+
+    except:
+        inc.conn.rollback()
+        result = False
     
     return result
 
