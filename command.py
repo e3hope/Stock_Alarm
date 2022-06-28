@@ -42,8 +42,8 @@ def bookmark(id, keyword):
 
 def limit(id,keyword,table,price):
     try:
-        sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET (name, price) VALUES (%s, %s)'
-        inc.cursor.execute(sql, (keyword, str(id), price))
+        sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id) DO UPDATE SET name = %s, price = %s'
+        inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
         inc.conn.commit()
         result = True
 
@@ -54,7 +54,7 @@ def limit(id,keyword,table,price):
     return result
 
 def limit_delete(id,keyword):
-    for table in list('low','high'):
+    for table in ['low','high']:
         try:
             sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
             inc.cursor.execute(sql, (keyword, str(id)))
