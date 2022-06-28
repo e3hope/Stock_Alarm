@@ -61,9 +61,12 @@ for u in updates :
             elif temp[0] == '!기간조회':
 
                 # 입력방식이 잘못된경우 리턴
-                if len(temp) != 2 or len(temp) != 3 :
+                if len(temp) < 2 or len(temp) > 3 :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
                     continue
+                
+                elif len(temp) == 3:
+                    period = temp[2]
 
                 elif len(temp) == 2:
                     period = int(temp[1]) if len(temp) == 2 else 7
@@ -88,14 +91,14 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                     continue
 
-                price = temp[1]
+                price = temp[2]
                 now = stock.now(keyword)
 
                 # 지정가 판단후 디비 입력
                 if price == now:
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '현재가격과 동일해서 등록하지 않습니다.')
                     continue
-                
+
                 elif price > now:
                     table = 'high'
                 elif price < now:
