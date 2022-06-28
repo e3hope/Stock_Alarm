@@ -53,16 +53,17 @@ def limit(id,keyword,table,price):
     
     return result
 
-def limit_delete(id,keyword,table):
-    try:
-        sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
-        inc.cursor.execute(sql, (keyword, str(id)))
-        inc.conn.commit()
-        result = True
+def limit_delete(id,keyword):
+    for table in list('low','high'):
+        try:
+            sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
+            inc.cursor.execute(sql, (keyword, str(id)))
+            inc.conn.commit()
+            result = True
 
-    except:
-        inc.conn.rollback()
-        result = False
+        except:
+            inc.conn.rollback()
+            result = False
     
     return result
 
