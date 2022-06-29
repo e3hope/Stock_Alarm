@@ -1,4 +1,3 @@
-from ast import keyword
 import FinanceDataReader as fdr
 import datetime
 import inc
@@ -138,9 +137,6 @@ def now(keyword):
         return None
     
     return data
-
-def low():
-    price = now(keyword)
 
 # 종목 코드
 def getcode(keyword):
