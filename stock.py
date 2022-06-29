@@ -1,3 +1,4 @@
+from ast import keyword
 import FinanceDataReader as fdr
 import datetime
 import inc
@@ -59,6 +60,71 @@ def getclose():
     
     return data
 
+def getlow():
+    sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM low AS l INNER JOIN stock AS s ON(l.name = s.name)'
+    inc.cursor.execute(sql)
+    result = inc.cursor.fetchall()
+    idx,chat_id,name,price,code = zip(*result)
+    
+    # 종목 종가 추출
+    Close = []
+    for i in range(len(code)):
+        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        Close.append(list(temp.transpose().to_dict().values())[0])
+    
+    data = {}
+    delete = []
+    for i in range(len(chat_id)):
+        if int(price[i]) <= Close[i]:
+            if chat_id[i] in data:
+                data[chat_id[i]].append({name[i]:price[i]})
+            else: 
+                data[chat_id[i]] = [{name[i]:price[i]}]
+            delete.append(idx[i])
+
+    if delete:
+        try:
+            sql = 'DELETE FROM low WHERE idx IN %s'
+            inc.cursor.execute(sql, (tuple(delete),))
+            inc.conn.commit()
+
+        except:
+            inc.conn.rollback()
+    
+    return data
+
+def gethigh():
+    sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM high AS l INNER JOIN stock AS s ON(l.name = s.name)'
+    inc.cursor.execute(sql)
+    result = inc.cursor.fetchall()
+    chat_id,name,price,code = zip(*result)
+    
+    # 종목 종가 추출
+    Close = []
+    for i in range(len(code)):
+        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        Close.append(list(temp.transpose().to_dict().values())[0])
+    
+    data = {}
+    delete = [] 
+    for i in range(len(chat_id)):
+        if int(price[i]) <= Close[i]:
+            if chat_id[i] in data:
+                data[chat_id[i]].append({name[i]:price[i]})
+            else: 
+                data[chat_id[i]] = [{name[i]:price[i]}]
+
+    if delete:
+        try:
+            sql = 'DELETE FROM high WHERE idx IN %s'
+            inc.cursor.execute(sql, (tuple(delete),))
+            inc.conn.commit()
+
+        except:
+            inc.conn.rollback()
+    
+    return data
+
 # 현재가격 구하기
 def now(keyword):
     
@@ -72,6 +138,9 @@ def now(keyword):
         return None
     
     return data
+
+def low():
+    price = now(keyword)
 
 # 종목 코드
 def getcode(keyword):

@@ -2,19 +2,26 @@ import inc
 import stock
 
 # 종가 불러오기
-data = stock.getclose()
+low = stock.getlow()
+high = stock.gethigh()
 
-# 유저별 관심종목 보내기
-for x,y in data.items():
-    text = ''
-    for z in y:
-        for k,v in z.items():
-            for vk,vv in v[0].items():
-                if vk == 'Close':
-                    temp = k + '의 종가: ' + str(format(vv, ',')) + '원'
-                elif vk == 'Change':
-                    temp = temp + ( '↑' if float(vv) >= 0 else '↓' ) + vv + '%\n'
-        text = temp + text
-    inc.bot.sendMessage(chat_id = x, text = text)
+# 유저별 지정가 보내기
+if low:
+    for x,y in low.items():
+        text = ''
+        for z in y:
+            for k,v in z.items():
+                inc.bot.sendMessage(chat_id = x, text = k + '의 가격이 지정한 ' + v + '원에 도달했습니다.\n'
+                                                        '해당 지정가는 자동으로 삭제됩니다.')
+
+
+# 유저별 지정가 보내기
+if high:
+    for x,y in high.items():
+        text = ''
+        for z in y:
+            for k,v in z.items():
+                inc.bot.sendMessage(chat_id = x, text = k + '의 가격이 지정한 ' + v + '원에 도달했습니다.\n'
+                                                        '해당 지정가는 자동으로 삭제됩니다.')
 
 inc.close()
