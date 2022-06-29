@@ -97,7 +97,7 @@ def gethigh():
     sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM high AS l INNER JOIN stock AS s ON(l.name = s.name)'
     inc.cursor.execute(sql)
     result = inc.cursor.fetchall()
-    chat_id,name,price,code = zip(*result)
+    idx,chat_id,name,price,code = zip(*result)
     
     # 종목 종가 추출
     Close = []
@@ -113,6 +113,7 @@ def gethigh():
                 data[chat_id[i]].append({name[i]:price[i]})
             else: 
                 data[chat_id[i]] = [{name[i]:price[i]}]
+            delete.append(idx[i])
 
     if delete:
         try:
