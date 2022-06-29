@@ -25,11 +25,11 @@ for u in updates :
 
         # 도움말
         elif u.message.text == '/help' :
-            inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.'
+            inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.\n'
                             '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다. ex) !관심종목 조회\n'
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다. ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다. ex) !관심종목 삭제 삼성전자\n'
-                            '!기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다. ex) !기간 조회 삼성전자 7\n'
+                            '!종목기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다. ex) !기간 조회 삼성전자 7\n'
                             '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다. ex) !지정가 추가 삼성전자 50000\n'
                             '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n'
                             '!지정가 삭제 {종목} - 입력 시 지정가 알림을 삭제합니다. ex) !지정가 추가 삼성전자')
@@ -38,14 +38,14 @@ for u in updates :
             
             # 종목코드 추출
             temp = u.message.text.split()
-            if temp[2]:
+            if len(temp) > 2:
                 keyword = temp[2]
 
             # 관심종목
             if temp[0] == '!관심종목':
                 
                 # 관심종목 조회
-                if len(temp) == 2 and temp[1] == '조회':
+                if temp[1] == '조회':
                     result = command.readBookmark(u.message.chat.id)
                     text = '\n'.join(r for r in result)
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
@@ -79,7 +79,7 @@ for u in updates :
                     continue
             
             # 종목 일자별 변화율
-            elif temp[0] == '!기간' and temp[1] == '조회':
+            elif temp[0] == '!종목기간' and temp[1] == '조회':
                 
                 if len(temp) == 4:
                     try:
@@ -139,15 +139,15 @@ for u in updates :
                         continue
 
                     elif price > now:
-                        result = command.high(u.message.chat.id,keyword,price)
+                        table = 'high'
+                        # result = command.high(u.message.chat.id,keyword,price)
                     
-                    elif price < now:
-                        result = command.low(u.message.chat.id,keyword,price)
-
+                    # elif price < now:
                     else:
-                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '문제가 생겼습니다. 관리자에게 문의주시기 바랍니다.')
-                        continue
-
+                        table = 'low'
+                        # result = command.low(u.message.chat.id,keyword,price)
+                    result = command.addLimit(u.message.chat.id, keyword, table, price)
+                    
                     # 지정가 확인 답장
                     if result:
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가: ' + str(format(price,',')) + '원이 등록되었습니다.')

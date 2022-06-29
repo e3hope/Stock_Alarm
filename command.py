@@ -48,9 +48,9 @@ def deleteBookmark(id, keyword):
     
     return result
 
-def low(id, keyword, price):
+def addLimit(id, keyword, table, price):
     try:
-        sql = 'INSERT INTO low (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
+        sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
         inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
         inc.conn.commit()
         result = True
@@ -61,18 +61,18 @@ def low(id, keyword, price):
     
     return result
 
-def high(id, keyword, price):
-    try:
-        sql = 'INSERT INTO high (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
-        inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
-        inc.conn.commit()
-        result = True
+# def high(id, keyword, price):
+#     try:
+#         sql = 'INSERT INTO high (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
+#         inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
+#         inc.conn.commit()
+#         result = True
 
-    except:
-        inc.conn.rollback()
-        result = False
+#     except:
+#         inc.conn.rollback()
+#         result = False
     
-    return result
+#     return result
 
 def deleteLimit(id, keyword):
     for table in ['low','high']:
