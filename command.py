@@ -12,31 +12,39 @@ def start(id, username, name):
     
     return result
 
-def bookmark(id, keyword):
+def createBookmark(id, keyword):
+    
+    # 관심종목 여부 확인
+    try:
+        sql = 'INSERT INTO bookmark (name, chat_id) VALUES (%s, %s)'
+        inc.cursor.execute(sql, (keyword, str(id)))
+        inc.conn.commit()
+        result = True
+    
+    except:
+        inc.conn.rollback()
+        result = False
+    
+    return result
+
+def readBookmark(id):
+    sql = 'SELECT name FROM bookmark WHERE chat_id = %s'
+    inc.cursor.execute(sql, [str(id)])
+    result = [item[0] for item in inc.cursor.fetchall()]
+    return result
+
+def deleteBookmark(id, keyword):
 
     # 관심종목 여부 확인
     try:
-        bookmarksql = 'SELECT name FROM bookmark WHERE name = %s AND chat_id = %s'
-        inc.cursor.execute(bookmarksql, (keyword, str(id)))
-        bookmark = inc.cursor.fetchone()
-
-        # 없으면 추가
-        if bookmark is None:
-            sql = 'INSERT INTO bookmark (name, chat_id) VALUES (%s, %s)'
-            inc.cursor.execute(sql, (keyword, str(id)))
-            inc.conn.commit()
-            result = 'insert'
-
-        # 있으면 삭제
-        else:
-            sql = 'DELETE FROM bookmark WHERE name = %s AND chat_id = %s'
-            inc.cursor.execute(sql, (keyword, str(id)))
-            inc.conn.commit()
-            result = 'delete'
+        sql = 'DELETE FROM bookmark WHERE name = %s AND chat_id = %s'
+        inc.cursor.execute(sql, (keyword, str(id)))
+        inc.conn.commit()
+        result = True
 
     except:
-            inc.conn.rollback()
-            result = 'error'
+        inc.conn.rollback()
+        result = False
     
     return result
 
@@ -66,7 +74,7 @@ def high(id, keyword, price):
     
     return result
 
-def limit_delete(id, keyword):
+def deleteLimit(id, keyword):
     for table in ['low','high']:
         try:
             sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
