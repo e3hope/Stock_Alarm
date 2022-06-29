@@ -81,14 +81,14 @@ def getlow():
                 data[chat_id[i]] = [{name[i]:price[i]}]
             delete.append(idx[i])
 
-    if delete:
-        try:
-            sql = 'DELETE FROM low WHERE idx IN %s'
-            inc.cursor.execute(sql, (tuple(delete),))
-            inc.conn.commit()
+    # if delete:
+    #     try:
+    #         sql = 'DELETE FROM low WHERE idx IN %s'
+    #         inc.cursor.execute(sql, (tuple(delete),))
+    #         inc.conn.commit()
 
-        except:
-            inc.conn.rollback()
+    #     except:
+    #         inc.conn.rollback()
     
     return data
 
@@ -113,14 +113,14 @@ def gethigh():
             else: 
                 data[chat_id[i]] = [{name[i]:price[i]}]
 
-    if delete:
-        try:
-            sql = 'DELETE FROM high WHERE idx IN %s'
-            inc.cursor.execute(sql, (tuple(delete),))
-            inc.conn.commit()
+    # if delete:
+    #     try:
+    #         sql = 'DELETE FROM high WHERE idx IN %s'
+    #         inc.cursor.execute(sql, (tuple(delete),))
+    #         inc.conn.commit()
 
-        except:
-            inc.conn.rollback()
+    #     except:
+    #         inc.conn.rollback()
     
     return data
 
