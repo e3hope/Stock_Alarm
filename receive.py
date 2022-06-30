@@ -27,12 +27,13 @@ for u in updates :
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.\n'
                             '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다. ex) !관심종목 조회\n'
-                            '!관심종목 추가 {종목} - 관심종목으로 지정됩니다. ex) !관심종목 추가 삼성전자\n'
-                            '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다. ex) !관심종목 삭제 삼성전자\n'
-                            '!종목기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다. ex) !기간 조회 삼성전자 7\n'
-                            '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다. ex) !지정가 추가 삼성전자 50000\n'
+                            '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
+                            '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
+                            '!종목기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다.\n ex) !기간 조회 삼성전자 7\n'
+                            '!지정가 조회 {종목} - 설정된 지정가를 보여줍니다. ex) !지정가 조회 삼성전자\n'
+                            '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다.\n ex) !지정가 추가 삼성전자 50000\n'
                             '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n'
-                            '!지정가 삭제 {종목} - 입력 시 지정가 알림을 삭제합니다. ex) !지정가 추가 삼성전자')
+                            '!지정가 삭제 {종목} - 입력 시 지정가 알림을 삭제합니다.\n ex) !지정가 삭제 삼성전자')
 
         if u.message.text.startswith('!'):
             
@@ -47,7 +48,7 @@ for u in updates :
                 # 관심종목 조회
                 if temp[1] == '조회':
                     result = command.readBookmark(u.message.chat.id)
-                    text = '\n'.join(r for r in result)
+                    text = '\n'.join('⦁ ' + r for r in result)
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
 
                 # 관심종목 추가/삭제
@@ -107,7 +108,29 @@ for u in updates :
              # 지정가 설정
             elif temp[0] == '!지정가':
 
-                if temp[1] == '추가':
+                if temp[1] == '조회':
+
+                    if len(temp) != 3:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
+                        continue
+
+                    result = command.readLimit(u.message.chat.id,keyword)
+                    
+                    # 조회결과가 없는 경우
+                    if result is None:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가가 없습니다.')
+                        continue
+                    
+                    text = keyword + '의 지정가\n'
+
+                    if 'high' in result:
+                        text = text + '⦁ 상향 지정가: ' + result['high'] + '원\n'
+
+                    if 'low' in result:
+                        text = text + '⦁ 하향 지정가: ' + result['low'] + '원\n'
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
+                    
+                elif temp[1] == '추가':
 
                     # 입력방식이 잘못된경우 리턴
                     if len(temp) != 4:
@@ -146,8 +169,8 @@ for u in updates :
                     else:
                         table = 'low'
                         # result = command.low(u.message.chat.id,keyword,price)
-                    result = command.addLimit(u.message.chat.id, keyword, table, price)
-                    
+                    result = command.createLimit(u.message.chat.id, keyword, table, price)
+
                     # 지정가 확인 답장
                     if result:
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가: ' + str(format(price,',')) + '원이 등록되었습니다.')

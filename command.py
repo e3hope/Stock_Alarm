@@ -37,8 +37,8 @@ def deleteBookmark(id, keyword):
 
     # 관심종목 여부 확인
     try:
-        sql = 'DELETE FROM bookmark WHERE name = %s AND chat_id = %s'
-        inc.cursor.execute(sql, (keyword, str(id)))
+        sql = 'DELETE FROM bookmark WHERE chat_id = %s AND name = %s'
+        inc.cursor.execute(sql, (str(id), keyword))
         inc.conn.commit()
         result = True
 
@@ -48,7 +48,7 @@ def deleteBookmark(id, keyword):
     
     return result
 
-def addLimit(id, keyword, table, price):
+def createLimit(id, keyword, table, price):
     try:
         sql = 'INSERT INTO ' + table + ' (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
         inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
@@ -61,24 +61,24 @@ def addLimit(id, keyword, table, price):
     
     return result
 
-# def high(id, keyword, price):
-#     try:
-#         sql = 'INSERT INTO high (name, chat_id, price) VALUES (%s, %s, %s) ON CONFLICT (chat_id, name) DO UPDATE SET name = %s, price = %s'
-#         inc.cursor.execute(sql, (keyword, str(id), price, keyword, price))
-#         inc.conn.commit()
-#         result = True
-
-#     except:
-#         inc.conn.rollback()
-#         result = False
+def readLimit(id, keyword):
+    try:
+        result = {}
+        for table in ['low','high']:
+            sql = 'SELECT price FROM ' + table + ' WHERE chat_id = %s AND name = %s'
+            inc.cursor.execute(sql, (str(id), keyword))
+            temp = inc.cursor.fetchone()
+            result[table] = temp[0]
+    except:
+        result = None
     
-#     return result
+    return result
 
 def deleteLimit(id, keyword):
     for table in ['low','high']:
         try:
-            sql = 'DELETE FROM ' + table + ' WHERE name = %s AND chat_id = %s'
-            inc.cursor.execute(sql, (keyword, str(id)))
+            sql = 'DELETE FROM ' + table + ' WHERE chat_id = %s AND name = %s '
+            inc.cursor.execute(sql, (str(id), keyword))
             inc.conn.commit()
             result = True
 
