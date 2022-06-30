@@ -68,10 +68,15 @@ def readLimit(id, keyword):
             sql = 'SELECT price FROM ' + table + ' WHERE chat_id = %s AND name = %s'
             inc.cursor.execute(sql, (str(id), keyword))
             temp = inc.cursor.fetchone()
-            result[table] = temp[0]
+            if temp:
+                result[table] = temp[0]
     except:
         result = None
     
+    # 값이 없는경우 None
+    if not temp:
+        result = None
+
     return result
 
 def deleteLimit(id, keyword):
