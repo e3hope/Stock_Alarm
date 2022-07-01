@@ -63,29 +63,26 @@ def createLimit(id, keyword, table, price):
 
 def readLimit(id, keyword = None):
 
-    # try:
-    result = {}
-    for table in ['low','high']:
-        if keyword is None:
-            sql = 'SELECT name,price FROM ' + table + ' WHERE chat_id = %s'
-            inc.cursor.execute(sql, [str(id)])
-            temp = inc.cursor.fetchall()
-            print(temp)
-            if temp:
-                for t in temp:
-                    if t[0] not in result:
-                        result[t[0]] = {}
-                    result[t[0]][table] = t[1]
-                # if name in result:
-                # result[table] = temp[0]
-        else:
-            sql = 'SELECT price FROM ' + table + ' WHERE chat_id = %s AND name = %s'
-            inc.cursor.execute(sql, (str(id), keyword))
-            temp = inc.cursor.fetchone()
-            if temp:
-                result[table] = temp[0]
-    # except:
-    #     result = None
+    try:
+        result = {}
+        for table in ['low','high']:
+            if keyword is None:
+                sql = 'SELECT name,price FROM ' + table + ' WHERE chat_id = %s'
+                inc.cursor.execute(sql, [str(id)])
+                temp = inc.cursor.fetchall()
+                if temp:
+                    for t in temp:
+                        if t[0] not in result:
+                            result[t[0]] = {}
+                        result[t[0]][table] = t[1]
+            else:
+                sql = 'SELECT price FROM ' + table + ' WHERE chat_id = %s AND name = %s'
+                inc.cursor.execute(sql, (str(id), keyword))
+                temp = inc.cursor.fetchone()
+                if temp:
+                    result[table] = temp[0]
+    except:
+        result = None
     
     # 값이 없는경우 None
     if not temp:
