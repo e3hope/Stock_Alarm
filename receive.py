@@ -110,25 +110,49 @@ for u in updates :
 
                 if temp[1] == '조회':
 
-                    if len(temp) != 3:
+                    # 전체 조회
+                    if len(temp) == 2:
+
+                        result = command.readLimit(u.message.chat.id)
+
+                        # 조회결과가 없는 경우
+                        if result is None:
+                            inc.bot.sendMessage(chat_id = u.message.chat.id, text = '설정된 지정가가 없습니다.')
+
+                        text = ''
+                        for k,v in result.items():
+                            text = text + k + '의 지정가\n'
+
+                            if 'high' in result:
+                                text = text + '⦁ 상향 지정가: ' + v['high'] + '원\n'
+
+                            if 'low' in result:
+                                text = text + '⦁ 하향 지정가: ' + v['low'] + '원\n'
+                            inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
+                        
+                    # 종목 지정가 조회
+                    elif len(temp) == 3:
+
+                        result = command.readLimit(u.message.chat.id,keyword)
+                        
+                        # 조회결과가 없는 경우
+                        if result is None:
+                            inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가가 없습니다.')
+                            continue
+                        
+                        text = keyword + '의 지정가\n'
+
+                        if 'high' in result:
+                            text = text + '⦁ 상향 지정가: ' + result['high'] + '원\n'
+
+                        if 'low' in result:
+                            text = text + '⦁ 하향 지정가: ' + result['low'] + '원\n'
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
+
+                    # 예외처리
+                    else :
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
                         continue
-
-                    result = command.readLimit(u.message.chat.id,keyword)
-                    
-                    # 조회결과가 없는 경우
-                    if result is None:
-                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가가 없습니다.')
-                        continue
-                    
-                    text = keyword + '의 지정가\n'
-
-                    if 'high' in result:
-                        text = text + '⦁ 상향 지정가: ' + result['high'] + '원\n'
-
-                    if 'low' in result:
-                        text = text + '⦁ 하향 지정가: ' + result['low'] + '원\n'
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
                     
                 elif temp[1] == '추가':
 
