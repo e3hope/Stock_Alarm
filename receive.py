@@ -26,10 +26,10 @@ for u in updates :
         # 도움말
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.\n'
+                            '!조회 {종목} {기간} - 기간별 변화율을 보여줍니다. ex) !조회 삼성전자 7\n'
                             '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다. ex) !관심종목 조회\n'
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
-                            '!종목기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다.\n ex) !기간 조회 삼성전자 7\n'
                             '!지정가 조회 - 설정된 지정가를 보여줍니다. ex) !지정가 조회 삼성전자\n'
                             '!지정가 조회 {종목} - 개별종목의 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
                             '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다.\n ex) !지정가 추가 삼성전자 50000\n'
@@ -81,17 +81,18 @@ for u in updates :
                     continue
             
             # 종목 일자별 변화율
-            elif temp[0] == '!종목기간' and temp[1] == '조회':
-                
-                if len(temp) == 4:
+            elif temp[0] == '!조회':
+                keyword = temp[1]
+
+                if len(temp) == 3:
                     try:
-                        period = int(temp[3])
+                        period = int(temp[2])
                     except:
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 숫자로 입력해주시기 바랍니다.')
                         continue
 
                 # 기본값 지정
-                elif len(temp) == 3:
+                elif len(temp) == 2:
                     period = 7
 
                 # 입력방식이 잘못된경우 리턴
@@ -196,7 +197,8 @@ for u in updates :
 
                     # 지정가 확인 답장
                     if result:
-                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가: ' + str(format(price,',')) + '원이 등록되었습니다.')
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = keyword + '의 지정가: ' 
+                        + str(format(price,',')) + '원이 ' + ( '상향' if table == 'high' else '하향' ) + '지정가로 등록되었습니다.')
                     else:
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = '알 수 없는 이유로 등록되지 않았습니다.')
                 
