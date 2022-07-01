@@ -30,9 +30,10 @@ for u in updates :
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
                             '!종목기간 조회 {종목} {기간} - 기간별 변화율을 보여줍니다.\n ex) !기간 조회 삼성전자 7\n'
-                            '!지정가 조회 {종목} - 설정된 지정가를 보여줍니다. ex) !지정가 조회 삼성전자\n'
+                            '!지정가 조회 - 설정된 지정가를 보여줍니다. ex) !지정가 조회 삼성전자\n'
+                            '!지정가 조회 {종목} - 개별종목의 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
                             '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다.\n ex) !지정가 추가 삼성전자 50000\n'
-                            '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n'
+                            '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n ex) !지정가 추가 삼성전자 60000\n'
                             '!지정가 삭제 {종목} - 입력 시 지정가 알림을 삭제합니다.\n ex) !지정가 삭제 삼성전자')
 
         if u.message.text.startswith('!'):
@@ -123,12 +124,13 @@ for u in updates :
                         for k,v in result.items():
                             text = text + k + '의 지정가\n'
 
-                            if 'high' in result:
+                            if 'high' in v:
                                 text = text + '⦁ 상향 지정가: ' + v['high'] + '원\n'
 
-                            if 'low' in result:
+                            if 'low' in v:
                                 text = text + '⦁ 하향 지정가: ' + v['low'] + '원\n'
-                            inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
+                            
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
                         
                     # 종목 지정가 조회
                     elif len(temp) == 3:
