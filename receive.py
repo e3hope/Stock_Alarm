@@ -145,10 +145,10 @@ for u in updates :
                         text = keyword + '의 지정가\n'
 
                         if 'high' in result:
-                            text = text + '⦁ 상향 지정가: ' + str(format(result['high'], ',')) + '원\n'
+                            text = text + '⦁ 상향 지정가: ' + str(format(int(result['high']), ',')) + '원\n'
 
                         if 'low' in result:
-                            text = text + '⦁ 하향 지정가: ' + str(format(result['low'], ',')) + '원\n'
+                            text = text + '⦁ 하향 지정가: ' + str(format(int(result['low']), ',')) + '원\n'
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
 
                     # 예외처리

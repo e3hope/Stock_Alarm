@@ -21,19 +21,20 @@ def info(keyword,period):
     df.index = df.index.strftime('%Y-%m-%d')
 
     # 총 합계 변수
-    sum = str(round(df['Change'].sum() * 100, 2)) + '%'
+    start = df['Close'].head(1).transpose().to_list()[0]
+    end = df['Close'].tail(1).transpose().to_list()[0]
+    sum = round((end - start) / start * 100, 2)
 
     # 퍼센트 변환
     df['Change'] = round(df['Change'] * 100, 2).apply(str)
 
     data = df.transpose().to_dict()
-    # data['Sum'] = sum
 
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
         temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change'] + '%\n'
         text = text + temp
-    return text + str(period) + '일간의 합계: ' + str(sum)
+    return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
 
 def getclose():
 
