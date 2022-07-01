@@ -125,10 +125,10 @@ for u in updates :
                             text = text + k + '의 지정가\n'
 
                             if 'high' in v:
-                                text = text + '⦁ 상향 지정가: ' + v['high'] + '원\n'
+                                text = text + '⦁ 상향 지정가: ' + str(format(int(v['high']), ',')) + '원\n'
 
                             if 'low' in v:
-                                text = text + '⦁ 하향 지정가: ' + v['low'] + '원\n'
+                                text = text + '⦁ 하향 지정가: ' + str(format(int(v['low']), ',')) + '원\n'
                             
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
                         
@@ -145,10 +145,10 @@ for u in updates :
                         text = keyword + '의 지정가\n'
 
                         if 'high' in result:
-                            text = text + '⦁ 상향 지정가: ' + result['high'] + '원\n'
+                            text = text + '⦁ 상향 지정가: ' + str(format(result['high'], ',')) + '원\n'
 
                         if 'low' in result:
-                            text = text + '⦁ 하향 지정가: ' + result['low'] + '원\n'
+                            text = text + '⦁ 하향 지정가: ' + str(format(result['low'], ',')) + '원\n'
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
 
                     # 예외처리
@@ -189,12 +189,9 @@ for u in updates :
 
                     elif price > now:
                         table = 'high'
-                        # result = command.high(u.message.chat.id,keyword,price)
                     
-                    # elif price < now:
                     else:
                         table = 'low'
-                        # result = command.low(u.message.chat.id,keyword,price)
                     result = command.createLimit(u.message.chat.id, keyword, table, price)
 
                     # 지정가 확인 답장
