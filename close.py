@@ -4,7 +4,7 @@ import stock
 # 종가 불러오기
 data = stock.getclose()
 
-# 유저별 관심종목 보내기
+# 유저별 관심종목 종가 보내기
 for x,y in data.items():
     text = ''
     for z in y:
