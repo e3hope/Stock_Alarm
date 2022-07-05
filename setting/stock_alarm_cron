@@ -1,0 +1,7 @@
+* * * * * /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/receive.py >> /var/log/receive.log 2>&1
+* * * * * sleep 15; /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/receive.py >> /var/log/receive.log 2>&1
+* * * * * sleep 30; /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/receive.py >> /var/log/receive.log 2>&1
+* * * * * sleep 45; /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/receive.py >> /var/log/receive.log 2>&1
+35 15 * * 1-5 /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/close.py >> /var/log/close.log 2>&1
+* * * * * /usr/bin/python3 /home/Stock_Alarm/Stock_Alarm/limit.py >> /var/log/limit.log 2>&1
+
