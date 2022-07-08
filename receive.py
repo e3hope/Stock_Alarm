@@ -93,7 +93,7 @@ for u in updates :
 
                 # 기본값 지정
                 elif len(temp) == 2:
-                    period = 7
+                    period = 1
 
                 # 입력방식이 잘못된경우 리턴
                 else:

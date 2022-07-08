@@ -29,12 +29,20 @@ def info(keyword,period):
     df['Change'] = round(df['Change'] * 100, 2).apply(str)
 
     data = df.transpose().to_dict()
-
+    
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
-        temp = str(x) + '\n 종가: ' + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change'] + '%\n'
+        print(( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ))
+        temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
+        
+        if period != 1:
+            temp =  temp + '%\n'
         text = text + temp
-    return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
+
+    if period == 1:
+        return text
+    else:
+        return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
 
 def getclose():
 
@@ -75,7 +83,6 @@ def getlow():
     data = {}
     delete = []
     for i in range(len(chat_id)):
-        print(price[i],Close[i])
         if int(price[i]) >= Close[i]:
             if chat_id[i] in data:
                 data[chat_id[i]].append({name[i]:price[i]})
