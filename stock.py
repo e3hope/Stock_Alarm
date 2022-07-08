@@ -12,7 +12,7 @@ def info(keyword,period):
     if code is None:
         return '상장하지 않은 회사입니다.'
     
-    date = datetime.datetime.now() - datetime.timedelta(days = period + 2)
+    date = datetime.datetime.now() - datetime.timedelta(days = period)
 
     # 해당종목 일주일치 데이터 및 합계 출력
     df = fdr.DataReader(code, date)[['Close','Change']]
