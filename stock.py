@@ -40,7 +40,7 @@ def info(keyword,period):
         text = text + temp
 
     if period == 1:
-        return text
+        return text + '%'
     else:
         return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
 
