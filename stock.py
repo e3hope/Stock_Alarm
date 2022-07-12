@@ -12,10 +12,18 @@ def info(keyword,period):
     if code is None:
         return '상장하지 않은 회사입니다.'
     
-    date = datetime.datetime.now() - datetime.timedelta(days = period)
+    
+    
+    # 장전 예외처리
+    if datetime.datetime.now().hour < 9:
 
-    # 해당종목 일주일치 데이터 및 합계 출력
-    df = fdr.DataReader(code, date)[['Close','Change']]
+        date = datetime.datetime.now() - datetime.timedelta(days = period + 1)
+        df = fdr.DataReader(code, date, datetime.datetime.now() - datetime.timedelta(days = 1))[['Close','Change']]
+
+    else:
+
+        date = datetime.datetime.now() - datetime.timedelta(days = period)
+        df = fdr.DataReader(code, date)[['Close','Change']]
 
     # 날짜변수 문자열 타입 변환
     df.index = df.index.strftime('%Y-%m-%d')
@@ -32,7 +40,6 @@ def info(keyword,period):
     
     text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
     for x,y in data.items():
-        print(( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ))
         temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
         
         if period != 1:
