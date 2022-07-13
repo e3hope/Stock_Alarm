@@ -6,7 +6,7 @@ import inc
 def info(keyword,period):
 
     # 코드 구하기
-    code = getcode(keyword)
+    code = getCode(keyword)
     
     # 예외처리
     if code is None:
@@ -75,7 +75,7 @@ def getclose():
     
     return data
 
-def getlow():
+def getLow():
     sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM low AS l INNER JOIN stock AS s ON(l.name = s.name)'
     inc.cursor.execute(sql)
     result = inc.cursor.fetchall()
@@ -108,7 +108,7 @@ def getlow():
     
     return data
 
-def gethigh():
+def getHigh():
     sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM high AS l INNER JOIN stock AS s ON(l.name = s.name)'
     inc.cursor.execute(sql)
     result = inc.cursor.fetchall()
@@ -141,11 +141,38 @@ def gethigh():
     
     return data
 
+def getBookmark(id):
+
+    sql = 'SELECT b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name) WHERE b.chat_id = %s'
+    inc.cursor.execute(sql,[id])
+    result = inc.cursor.fetchall()
+    name,code = zip(*result)
+
+    # 종목 종가 추출
+    Close = []
+    for i in range(len(code)):
+
+        # 장전 예외처리
+        if datetime.datetime.now().hour < 9:
+            temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
+            Close.append(list(temp.transpose().to_dict().values())[0])
+        
+        else:
+            temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+            Close.append(list(temp.transpose().to_dict().values())[0])
+
+
+    data = {}   
+    for i in range(len(name)):
+            data[name[i]] = Close[i]
+    
+    return data
+
 # 현재가격 구하기
 def now(keyword):
     
     # 코드 구하기
-    code = getcode(keyword)
+    code = getCode(keyword)
 
     try:
         # 장전 예외처리
@@ -162,7 +189,7 @@ def now(keyword):
     return data
 
 # 종목 코드
-def getcode(keyword):
+def getCode(keyword):
     
     # 디비에서 종목코드 가져오기
     try:

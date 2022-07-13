@@ -2,8 +2,8 @@ import inc
 import stock
 
 # 종가 불러오기
-low = stock.getlow()
-high = stock.gethigh()
+low = stock.getLow()
+high = stock.getHigh()
 
 # 유저별 지정가 보내기
 if low:
