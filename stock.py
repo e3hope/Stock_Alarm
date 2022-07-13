@@ -148,8 +148,14 @@ def now(keyword):
     code = getcode(keyword)
 
     try:
-        temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-        data = list(temp.transpose().to_dict().values())[0]
+        # 장전 예외처리
+        if datetime.datetime.now().hour < 9:
+            temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
+            data = list(temp.transpose().to_dict().values())[0]
+
+        else:
+            temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+            data = list(temp.transpose().to_dict().values())[0]
     except:
         return None
     
