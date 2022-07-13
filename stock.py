@@ -51,7 +51,7 @@ def info(keyword,period):
     else:
         return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
 
-def getclose():
+def getClose():
 
     # code 구하기
     sql = 'SELECT b.chat_id, b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name)'
@@ -143,29 +143,33 @@ def getHigh():
 
 def getBookmark(id):
 
-    sql = 'SELECT b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name) WHERE b.chat_id = %s'
-    inc.cursor.execute(sql,[id])
-    result = inc.cursor.fetchall()
-    name,code = zip(*result)
+    try:
+        sql = 'SELECT b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name) WHERE b.chat_id = %s'
+        inc.cursor.execute(sql,[id])
+        result = inc.cursor.fetchall()
+        name,code = zip(*result)
 
-    # 종목 종가 추출
-    Close = []
-    for i in range(len(code)):
+        # 종목 종가 추출
+        Close = []
+        for i in range(len(code)):
 
-        # 장전 예외처리
-        if datetime.datetime.now().hour < 9:
-            temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
-            Close.append(list(temp.transpose().to_dict().values())[0])
-        
-        else:
-            temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-            Close.append(list(temp.transpose().to_dict().values())[0])
+            # 장전 예외처리
+            if datetime.datetime.now().hour < 9:
+                temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
+                Close.append(list(temp.transpose().to_dict().values())[0])
+            
+            else:
+                temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+                Close.append(list(temp.transpose().to_dict().values())[0])
 
 
-    data = {}   
-    for i in range(len(name)):
-            data[name[i]] = Close[i]
-    
+        data = {}   
+        for i in range(len(name)):
+                data[name[i]] = Close[i]
+
+    except:
+        data = None
+
     return data
 
 # 현재가격 구하기

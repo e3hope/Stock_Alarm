@@ -2,7 +2,7 @@ import inc
 import stock
 
 # 종가 불러오기
-data = stock.getclose()
+data = stock.getClose()
 
 # 유저별 관심종목 종가 보내기
 for x,y in data.items():
