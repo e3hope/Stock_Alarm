@@ -193,7 +193,7 @@ def now(keyword):
 
     else:
         data = None
-        
+
     return data
 
 # 종목 코드
@@ -206,12 +206,12 @@ def getCode(keyword):
         code = inc.cursor.fetchone()[0]
 
     # 없는경우 finace api로 종목코드 구하기
-    # except TypeError:
-    #     try:
-    #         df_krx = fdr.StockListing('KRX')
-    #         code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
-    #     except:
-    #         return None
+    except TypeError:
+        try:
+            df_krx = fdr.StockListing('KRX')
+            code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
+        except:
+            return None
 
     # 둘다없으면 리턴 
     except:
