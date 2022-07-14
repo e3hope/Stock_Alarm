@@ -49,9 +49,13 @@ for u in updates :
                 # 관심종목 조회
                 if temp[1] == '조회':
                     result = stock.getBookmark(u.message.chat.id)
-                    text = '\n'.join('⦁ ' + x + '의 현재가: ' + str(y) + '원' for x,y in result.items())
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
-                    
+                    if result is None:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목이 조회되지 않았습니다.')
+
+                    else:
+                        text = '\n'.join('⦁ ' + x + '의 현재가: ' + str(y) + '원' for x,y in result.items())
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
+
                     # 종목만 조회
                     # result = command.readBookmark(u.message.chat.id)
                     # text = '\n'.join('⦁ ' + r for r in result)

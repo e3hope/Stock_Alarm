@@ -178,18 +178,22 @@ def now(keyword):
     # 코드 구하기
     code = getCode(keyword)
 
-    try:
-        # 장전 예외처리
-        if datetime.datetime.now().hour < 9:
-            temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
-            data = list(temp.transpose().to_dict().values())[0]
+    if code is not None:
+        try:
+            # 장전 예외처리
+            if datetime.datetime.now().hour < 9:
+                temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
+                data = list(temp.transpose().to_dict().values())[0]
 
-        else:
-            temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-            data = list(temp.transpose().to_dict().values())[0]
-    except:
-        return None
-    
+            else:
+                temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+                data = list(temp.transpose().to_dict().values())[0]
+        except:
+            data = None
+
+    else:
+        data = None
+        
     return data
 
 # 종목 코드
@@ -202,12 +206,12 @@ def getCode(keyword):
         code = inc.cursor.fetchone()[0]
 
     # 없는경우 finace api로 종목코드 구하기
-    except TypeError:
-        try:
-            df_krx = fdr.StockListing('KRX')
-            code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
-        except:
-            return None
+    # except TypeError:
+    #     try:
+    #         df_krx = fdr.StockListing('KRX')
+    #         code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
+    #     except:
+    #         return None
 
     # 둘다없으면 리턴 
     except:
