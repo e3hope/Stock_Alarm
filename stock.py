@@ -145,7 +145,7 @@ def getBookmark(id):
 
     try:
         sql = 'SELECT b."name", s.code FROM bookmark AS b INNER JOIN stock AS s ON(b.name  = s.name) WHERE b.chat_id = %s'
-        inc.cursor.execute(sql,[id])
+        inc.cursor.execute(sql,[str(id)])
         result = inc.cursor.fetchall()
         name,code = zip(*result)
 
@@ -206,12 +206,12 @@ def getCode(keyword):
         code = inc.cursor.fetchone()[0]
 
     # 없는경우 finace api로 종목코드 구하기
-    except TypeError:
-        try:
-            df_krx = fdr.StockListing('KRX')
-            code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
-        except:
-            return None
+    # except TypeError:
+    #     try:
+    #         df_krx = fdr.StockListing('KRX')
+    #         code = df_krx.where(df_krx['Name'] == keyword).dropna()['Symbol'].values[0]
+    #     except:
+    #         return None
 
     # 둘다없으면 리턴 
     except:

@@ -26,11 +26,11 @@ for u in updates :
         # 도움말
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.\n'
-                            '!조회 {종목} {기간} - 기간별 변화율을 보여줍니다. ex) !조회 삼성전자 7\n'
-                            '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다. ex) !관심종목 조회\n'
+                            '!조회 {종목} {기간} - 기간별 변화율을 보여줍니다.\n ex) !조회 삼성전자 7\n'
+                            '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다.\n ex) !관심종목 조회\n'
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
-                            '!지정가 조회 - 설정된 지정가를 보여줍니다. ex) !지정가 조회 삼성전자\n'
+                            '!지정가 조회 - 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
                             '!지정가 조회 {종목} - 개별종목의 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
                             '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다.\n ex) !지정가 추가 삼성전자 50000\n'
                             '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n ex) !지정가 추가 삼성전자 60000\n'
@@ -55,11 +55,6 @@ for u in updates :
                     else:
                         text = '\n'.join('⦁ ' + x + '의 현재가: ' + str(y) + '원' for x,y in result.items())
                         inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
-
-                    # 종목만 조회
-                    # result = command.readBookmark(u.message.chat.id)
-                    # text = '\n'.join('⦁ ' + r for r in result)
-                    # inc.bot.sendMessage(chat_id = u.message.chat.id, text = u.message.chat.last_name + u.message.chat.first_name +'님의 관심종목\n' + text)
 
                 # 관심종목 추가/삭제
                 elif len(temp) == 3:               
