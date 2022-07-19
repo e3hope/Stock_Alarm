@@ -3,19 +3,21 @@
 ## 시작 방법
 telegram에서 BotFather를 추가하여 botFather에서 bot을 생성한다.
 생성된 봇과 같이 알려주는 token을 inc.py에 추가하여 저장한다.
+주식정보는 finance-datareader api 활용
 
 ## 파일 설명
 ### setting file
 - inc.py
 
 ### class/method file
-- stock.py
-- command.py
+- stock.py      # 주식 api method file
+- command.py    # 명령문 db연결 관련 method file
 
 ### cron file 
-- receive.py
-- limit.py
-- close.py
+- receive.py    # telegram 메세지 실행 file
+- limit.py      # 지정가 전송 file
+- close.py      # 종가 전송 file
+- stockcode_update.py   # 주식종목코드 갱신 file
 
 ## 구현 기능 및 실행 명령어
 /start - 시작 / 회원정보 자동 추가
