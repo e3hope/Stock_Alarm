@@ -10,14 +10,14 @@ telegram에서 BotFather를 추가하여 botFather에서 bot을 생성한다.
 - inc.py
 
 ### class/method file
-- stock.py      * 주식 api method file *
-- command.py    * 명령문 db연결 관련 method file *
+- stock.py      *주식 api method file*
+- command.py    *명령문 db연결 관련 method file*
 
 ### cron file 
-- receive.py    * telegram 메세지 실행 file *
-- limit.py      * 지정가 전송 file *
-- close.py      * 종가 전송 file *
-- stockcode_update.py   * 주식종목코드 갱신 file *
+- receive.py    *telegram 메세지 실행 file*
+- limit.py      *지정가 전송 file*
+- close.py      *종가 전송 file*
+- stockcode_update.py   *주식종목코드 갱신 file*
 
 ## 구현 기능 및 실행 명령어
 /start - 시작 / 회원정보 자동 추가
