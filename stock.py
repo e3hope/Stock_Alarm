@@ -155,12 +155,15 @@ def getBookmark(id):
 
             # 장전 예외처리
             if datetime.datetime.now().hour < 9:
+
+                # 월요일인 경우
+                if datetime.datetime.today().weekday() == 0:
+                    temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 4))['Close']
                 temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
-                Close.append(list(temp.transpose().to_dict().values())[0])
             
             else:
                 temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-                Close.append(list(temp.transpose().to_dict().values())[0])
+            Close.append(list(temp.transpose().to_dict().values())[0])
 
 
         data = {}   
@@ -182,12 +185,16 @@ def now(keyword):
         try:
             # 장전 예외처리
             if datetime.datetime.now().hour < 9:
+                
+                # 월요일인 경우
+                if datetime.datetime.today().weekday() == 0:
+                    temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 4))['Close']
                 temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
-                data = list(temp.transpose().to_dict().values())[0]
 
             else:
                 temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
-                data = list(temp.transpose().to_dict().values())[0]
+
+            data = list(temp.transpose().to_dict().values())[0]
         except:
             data = None
 
