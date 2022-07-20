@@ -85,7 +85,7 @@ def readLimit(id, keyword = None):
         result = None
     
     # 값이 없는경우 None
-    if not temp:
+    if not result:
         result = None
 
     return result
