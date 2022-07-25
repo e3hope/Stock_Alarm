@@ -14,12 +14,10 @@ def info(keyword,period):
     
     # 장전 예외처리
     if datetime.datetime.now().hour < 9:
-
         date = datetime.datetime.now() - datetime.timedelta(days = period + 1)
         df = fdr.DataReader(code, date, datetime.datetime.now() - datetime.timedelta(days = 1))[['Close','Change']]
 
     else:
-
         date = datetime.datetime.now() - datetime.timedelta(days = period)
         df = fdr.DataReader(code, date)[['Close','Change']]
 
@@ -36,6 +34,7 @@ def info(keyword,period):
     data = df.transpose().to_dict()
     
     return data, sum
+    # ({'2022-07-22': {'Close': 6440, 'Change': '-9.55'}, '2022-07-25': {'Close': 6350, 'Change': '-1.4'}}, -1.4)
 
 def getClose():
 
@@ -50,16 +49,18 @@ def getClose():
     for i in range(len(code)):
         temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))[['Close','Change']]
         temp['Change'] = round(temp['Change'] * 100, 2).apply(str)
-        Close.append(list(temp.transpose().to_dict().values()))
+        Close.append(list(temp.transpose().to_dict().values())[0])
 
     data = {}   
+    
     for i in range(len(chat_id)):
         if chat_id[i] in data:
-            data[chat_id[i]].append({name[i]:Close[i]})
+            data[chat_id[i]][name[i]] = Close[i]
         else: 
-            data[chat_id[i]] = [{name[i]:Close[i]}]
+            data[chat_id[i]] = {name[i]:Close[i]}
     
     return data
+    # {'942186215': {'파인디앤씨': {'Close': 1650, 'Change': '1.54'}, '이트론': {'Close': 190, 'Change': '-1.04'}}, '5510686398': {'삼성전자': {'Close': 61400, 'Change': '0.16'}}
 
 def getLow():
     sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM low AS l INNER JOIN stock AS s ON(l.name = s.name)'
@@ -70,7 +71,7 @@ def getLow():
     # 종목 종가 추출
     Close = []
     for i in range(len(code)):
-        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        temp = getStock(code[i])
         Close.append(list(temp.transpose().to_dict().values())[0])
     
     data = {}
@@ -78,9 +79,9 @@ def getLow():
     for i in range(len(chat_id)):
         if int(price[i]) >= Close[i]:
             if chat_id[i] in data:
-                data[chat_id[i]].append({name[i]:price[i]})
+                data[chat_id[i]][name[i]] = price[i]
             else: 
-                data[chat_id[i]] = [{name[i]:price[i]}]
+                data[chat_id[i]] = {name[i]:price[i]}
             delete.append(idx[i])
 
     if delete:
@@ -93,6 +94,7 @@ def getLow():
             inc.conn.rollback()
     
     return data
+    # {'1119827172': {'세종메디칼': '6000'}}
 
 def getHigh():
     sql = 'SELECT l.idx, l.chat_id, l."name", l.price, s.code FROM high AS l INNER JOIN stock AS s ON(l.name = s.name)'
@@ -103,7 +105,7 @@ def getHigh():
     # 종목 종가 추출
     Close = []
     for i in range(len(code)):
-        temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+        temp = getStock(code[i])
         Close.append(list(temp.transpose().to_dict().values())[0])
     
     data = {}
@@ -111,9 +113,9 @@ def getHigh():
     for i in range(len(chat_id)):
         if int(price[i]) <= Close[i]:
             if chat_id[i] in data:
-                data[chat_id[i]].append({name[i]:price[i]})
+                data[chat_id[i]][name[i]] = price[i]
             else: 
-                data[chat_id[i]] = [{name[i]:price[i]}]
+                data[chat_id[i]] = {name[i]:price[i]}
             delete.append(idx[i])
 
     if delete:
@@ -126,6 +128,7 @@ def getHigh():
             inc.conn.rollback()
     
     return data
+    # {'1119827172': {'세종메디칼': '6000'}}
 
 def getBookmark(id):
 
@@ -144,11 +147,11 @@ def getBookmark(id):
 
                 # 월요일인 경우
                 if datetime.datetime.today().weekday() == 0:
-                    temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 4))['Close']
-                temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
-            
+                    temp = getStock(code,4)
+                temp = getStock(code,2)
+
             else:
-                temp = fdr.DataReader(code[i], datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+                temp = getStock(code)
             Close.append(list(temp.transpose().to_dict().values())[0])
 
 
@@ -174,11 +177,11 @@ def now(keyword):
                 
                 # 월요일인 경우
                 if datetime.datetime.today().weekday() == 0:
-                    temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 4))['Close']
-                temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 2))['Close']
+                    temp = getStock(code,4)
+                temp = getStock(code,2)
 
             else:
-                temp = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = 1))['Close']
+                temp = getStock(code)
 
             data = list(temp.transpose().to_dict().values())[0]
         except:
@@ -188,6 +191,7 @@ def now(keyword):
         data = None
 
     return data
+    # 6310
 
 # 종목 코드
 def getCode(keyword):
@@ -211,3 +215,13 @@ def getCode(keyword):
         return None
 
     return code
+    # 258830
+
+# 주식 가격
+def getStock(code,period = 1):
+    data = fdr.DataReader(code, datetime.datetime.now() - datetime.timedelta(days = period))['Close']
+
+    return data
+    # Date
+    # 2022-07-22    6440
+    # 2022-07-25    6320
