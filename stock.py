@@ -35,7 +35,7 @@ def info(keyword,period):
     df['Change'] = round(df['Change'] * 100, 2).apply(str)
     data = df.transpose().to_dict()
     
-    return data
+    return data, sum
 
 def getClose():
 
