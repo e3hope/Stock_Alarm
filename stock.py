@@ -147,13 +147,12 @@ def getBookmark(id):
 
                 # 월요일인 경우
                 if datetime.datetime.today().weekday() == 0:
-                    temp = getStock(code,4)
-                temp = getStock(code,2)
+                    temp = getStock(code[i],4)
+                temp = getStock(code[i],2)
 
             else:
-                temp = getStock(code)
+                temp = getStock(code[i])
             Close.append(list(temp.transpose().to_dict().values())[0])
-
 
         data = {}   
         for i in range(len(name)):
@@ -163,6 +162,7 @@ def getBookmark(id):
         data = None
 
     return data
+    # {'룽투코리아': 5080, '세종메디칼': 6270, '펄어비스': 53000}
 
 # 현재가격 구하기
 def now(keyword):
