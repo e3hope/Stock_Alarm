@@ -111,9 +111,10 @@ for u in updates :
                     continue
                 
                 # 종목 정보값
-                data,sum = stock.info(keyword,period)
+                result,sum = stock.info(keyword,period)
+                text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
                 
-                for x,y in data.items():
+                for x,y in result.items():
                     temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
                     
                     if period != 1:
