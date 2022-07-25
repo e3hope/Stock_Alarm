@@ -12,8 +12,6 @@ def info(keyword,period):
     if code is None:
         return '상장하지 않은 회사입니다.'
     
-    
-    
     # 장전 예외처리
     if datetime.datetime.now().hour < 9:
 
@@ -35,21 +33,9 @@ def info(keyword,period):
 
     # 퍼센트 변환
     df['Change'] = round(df['Change'] * 100, 2).apply(str)
-
     data = df.transpose().to_dict()
     
-    text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
-    for x,y in data.items():
-        temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
-        
-        if period != 1:
-            temp =  temp + '%\n'
-        text = text + temp
-
-    if period == 1:
-        return text + '%'
-    else:
-        return text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
+    return data
 
 def getClose():
 

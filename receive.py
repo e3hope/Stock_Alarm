@@ -1,6 +1,7 @@
 import inc
 import stock
 import command
+import datetime
 
 # 최종업데이트목록
 offset = inc.lastupdate()
@@ -30,7 +31,7 @@ for u in updates :
                             '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다.\n ex) !관심종목 조회\n'
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
-                            '!지정가 조회 - 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
+                            '!지정가 조회 - 설정된 지정가를 보여줍니다.\n ex) !지정가 조회\n'
                             '!지정가 조회 {종목} - 개별종목의 설정된 지정가를 보여줍니다.\n ex) !지정가 조회 삼성전자\n'
                             '!지정가 추가 {종목} {가격} - 지정된 가격이 오면 알림을 보냅니다.\n ex) !지정가 추가 삼성전자 50000\n'
                             '!지정가 추가 {종목} {가격} - 재입력 시 지정된 가격을 수정해줍니다.\n ex) !지정가 추가 삼성전자 60000\n'
@@ -109,7 +110,22 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
                     continue
                 
-                inc.bot.sendMessage(chat_id = u.message.chat.id, text = stock.info(keyword,period))
+                # 종목 정보값
+                data = stock.info(keyword,period)
+                
+                for x,y in data.items():
+                    temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
+                    
+                    if period != 1:
+                        temp =  temp + '%\n'
+                    text = text + temp
+
+                if period == 1:
+                    text = text + '%'
+                else:
+                    text = text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
+
+                inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
 
              # 지정가 설정
             elif temp[0] == '!지정가':
