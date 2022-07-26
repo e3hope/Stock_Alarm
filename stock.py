@@ -1,4 +1,5 @@
 import FinanceDataReader as fdr
+import matplotlib.pyplot as plt
 import datetime
 import inc
 
@@ -225,3 +226,18 @@ def getStock(code,period = 1):
     # Date
     # 2022-07-22    6440
     # 2022-07-25    6320
+
+# 주식차트
+def getImage(code,period = 7):
+
+    if period < 7:
+        return None
+    
+    data = getStock(code,period)
+    data.plot()
+
+    filepath = inc.environment[inc.branch] + 'Image/'
+    filename = str(datetime.datetime.now()) + '.jpg'
+    plt.savefig(filepath + filename)
+
+    return filepath + filename

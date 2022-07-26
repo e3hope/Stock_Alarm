@@ -28,6 +28,7 @@ for u in updates :
         elif u.message.text == '/help' :
             inc.bot.sendMessage(chat_id = u.message.chat.id, text = '관심종목으로 지정시 15:35분에 종가 가격을 알람으로 보냅니다.\n'
                             '!조회 {종목} {기간} - 기간별 변화율을 보여줍니다.\n ex) !조회 삼성전자 7\n'
+                            '!차트 {종목} {기간} - 기간별 차트 변화율을 보여줍니다.\n ex !차트 삼성전자 7\n'
                             '!관심종목 조회 - 나의 관심종목 리스트를 조회합니다.\n ex) !관심종목 조회\n'
                             '!관심종목 추가 {종목} - 관심종목으로 지정됩니다.\n ex) !관심종목 추가 삼성전자\n'
                             '!관심종목 삭제 {종목} - 관심종목에서 삭제됩니다.\n ex) !관심종목 삭제 삼성전자\n'
@@ -44,8 +45,85 @@ for u in updates :
             if len(temp) > 2:
                 keyword = temp[2]
 
+            # 종목 일자별 변화율
+            if temp[0] == '!조회':
+                keyword = temp[1]
+
+                if len(temp) == 3:
+                    try:
+                        period = int(temp[2])
+                    except:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 숫자로 입력해주시기 바랍니다.')
+                        continue
+
+                # 기본값 지정
+                elif len(temp) == 2:
+                    period = 1
+
+                # 입력방식이 잘못된경우 리턴
+                else:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
+                    continue
+
+                # 종목코드가 없는 경우
+                if stock.getCode(keyword) is None:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
+                    continue
+                
+                # 종목 정보값
+                result,sum = stock.info(keyword,period)
+                text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
+
+                for x,y in result.items():
+                    temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
+                    
+                    if period != 1:
+                        temp =  temp + '%\n'
+                    text = text + temp
+
+                if period == 1:
+                    text = text + '%'
+                else:
+                    text = text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
+
+                inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
+
+            # 차트
+            elif temp[0] == '!차트':
+                keyword = temp[1]
+
+                if len(temp) == 3:
+                    try:
+                        period = int(temp[2])
+                    except:
+                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 숫자로 입력해주시기 바랍니다.')
+                        continue
+                
+                # 기본값 지정
+                elif len(temp) == 2:
+                    period = 1
+
+                # 입력방식이 잘못된경우 리턴
+                else:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
+                    continue
+
+                code = stock.getCode(keyword)
+                # 종목코드가 없는 경우
+                if code is None:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
+                    continue
+
+                result = stock.getImage(code,period)
+
+                if result is None:
+                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 7일 이상으로 해주시기바랍니다.')
+                    continue
+                
+                inc.bot.sendPhoto(chat_id=u.message.chat.id, photo=result, caption="텍스트")
+
             # 관심종목
-            if temp[0] == '!관심종목':
+            elif temp[0] == '!관심종목':
                 
                 # 관심종목 조회
                 if temp[1] == '조회':
@@ -85,49 +163,6 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
                     continue
             
-            # 종목 일자별 변화율
-            elif temp[0] == '!조회':
-                keyword = temp[1]
-
-                if len(temp) == 3:
-                    try:
-                        period = int(temp[2])
-                    except:
-                        inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 숫자로 입력해주시기 바랍니다.')
-                        continue
-
-                # 기본값 지정
-                elif len(temp) == 2:
-                    period = 1
-
-                # 입력방식이 잘못된경우 리턴
-                else:
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '입력방식이 잘못되었습니다.')
-                    continue
-
-                # 종목코드가 없는 경우
-                if stock.getCode(keyword) is None:
-                    inc.bot.sendMessage(chat_id = u.message.chat.id, text = '상장되지않은 회사입니다.')
-                    continue
-                
-                # 종목 정보값
-                result,sum = stock.info(keyword,period)
-                text = str(keyword) + '의 ' + str(period) + '일간 변동률\n'
-                
-                for x,y in result.items():
-                    temp = str(x) + '\n' + ( '현재가: ' if str(datetime.datetime.now().date()) == x else '종가: ' ) + str(format(y['Close'], ',')) + '원 ' + ( '↑' if float(y['Change']) >= 0 else '↓' ) + y['Change']
-                    
-                    if period != 1:
-                        temp =  temp + '%\n'
-                    text = text + temp
-
-                if period == 1:
-                    text = text + '%'
-                else:
-                    text = text + str(period) + '일간의 합계: ' + ( '↑' if int(sum) >= 0 else '↓' ) + str(sum) + '%\n'
-
-                inc.bot.sendMessage(chat_id = u.message.chat.id, text = text)
-
              # 지정가 설정
             elif temp[0] == '!지정가':
 
