@@ -120,7 +120,7 @@ for u in updates :
                     inc.bot.sendMessage(chat_id = u.message.chat.id, text = '기간은 7일 이상으로 해주시기바랍니다.')
                     continue
                 
-                inc.bot.sendPhoto(chat_id=u.message.chat.id, photo=result, caption="텍스트")
+                inc.bot.send_photo(u.message.chat.id, open(result,'rb'))
 
             # 관심종목
             elif temp[0] == '!관심종목':
